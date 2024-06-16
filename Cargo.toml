@@ -17,6 +17,7 @@ pyo3-build-config = "0.21.0"
 base64 = "0.22"
 chrono = "0.4.38"
 tantivy = "0.22.0"
+tantivy-jieba = "0.11.0"
 itertools = "0.13.0"
 futures = "0.3.30"
 pythonize = "0.21.0"
@@ -26,3 +27,6 @@ serde_json = "1.0.117"
 [dependencies.pyo3]
 version = "0.21.0"
 features = ["chrono", "extension-module"]
+
+[patch.crates-io]
+jieba-rs = { git = "https://github.com/messense/jieba-rs.git" }

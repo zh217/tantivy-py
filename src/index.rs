@@ -162,8 +162,8 @@ impl IndexWriter {
             Value::Null => {
                 return Err(exceptions::PyValueError::new_err(format!(
                     "Field `{field_name}` is null type not deletable."
-                )))
-            },
+                )));
+            }
             Value::Str(text) => Term::from_field_text(field, &text),
             Value::U64(num) => Term::from_field_u64(field, num),
             Value::I64(num) => Term::from_field_i64(field, num),
@@ -173,23 +173,23 @@ impl IndexWriter {
             Value::Bytes(_) => {
                 return Err(exceptions::PyValueError::new_err(format!(
                     "Field `{field_name}` is bytes type not deletable."
-                )))
+                )));
             }
             Value::PreTokStr(_pretok) => {
                 return Err(exceptions::PyValueError::new_err(format!(
                     "Field `{field_name}` is pretokenized. This is not authorized for delete."
-                )))
+                )));
             }
             Value::Array(_) => {
                 return Err(exceptions::PyValueError::new_err(format!(
                     "Field `{field_name}` is array type not deletable."
-                )))
+                )));
             }
             Value::Object(_) => {
                 return Err(exceptions::PyValueError::new_err(format!(
                     "Field `{field_name}` is json object type not deletable."
-                )))
-            },
+                )));
+            }
             Value::Bool(b) => Term::from_field_bool(field, b),
             Value::IpAddr(i) => Term::from_field_ip_addr(field, i)
         };
@@ -250,7 +250,7 @@ impl Index {
                         tv::IndexSettings::default(),
                     )
                 }
-                .map_err(to_pyerr)?
+                    .map_err(to_pyerr)?
             }
             None => tv::Index::create_in_ram(schema.inner.clone()),
         };
@@ -289,7 +289,7 @@ impl Index {
             0 => self.index.writer(heap_size),
             _ => self.index.writer_with_num_threads(num_threads, heap_size),
         }
-        .map_err(to_pyerr)?;
+            .map_err(to_pyerr)?;
         let schema = self.index.schema();
         Ok(IndexWriter {
             inner_index_writer: Some(writer),
@@ -388,7 +388,9 @@ impl Index {
     ///         `prefix` determines if terms which are prefixes of the given term match the query.
     ///         `distance` determines the maximum Levenshtein distance between terms matching the query and the given term.
     ///         `transpose_cost_one` determines if transpositions of neighbouring characters are counted only once against the Levenshtein distance.
-    #[pyo3(signature = (query, default_field_names = None, field_boosts = HashMap::new(), fuzzy_fields = HashMap::new()))]
+    #[pyo3(
+        signature = (query, default_field_names = None, field_boosts = HashMap::new(), fuzzy_fields = HashMap::new())
+    )]
     pub fn parse_query(
         &self,
         query: &str,
@@ -433,7 +435,9 @@ impl Index {
     /// Returns a tuple containing the parsed query and a list of errors.
     ///
     /// Raises ValueError if a field in `default_field_names` is not defined or marked as indexed.
-    #[pyo3(signature = (query, default_field_names = None, field_boosts = HashMap::new(), fuzzy_fields = HashMap::new()))]
+    #[pyo3(
+        signature = (query, default_field_names = None, field_boosts = HashMap::new(), fuzzy_fields = HashMap::new())
+    )]
     pub fn parse_query_lenient(
         &self,
         query: &str,
@@ -545,5 +549,6 @@ impl Index {
                 .build();
             index.tokenizers().register(name, an);
         }
+        index.tokenizers().register("jieba", tantivy_jieba::JiebaTokenizer {})
     }
 }
